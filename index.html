@@ -193,7 +193,7 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
             } else{
                 d = dom(y);
             }
-        } else if (str == rightPA(str) && extract(str)[0] != "null") {
+        } else if (str == rightPA(str) && /^Z_/.test(str) && extract(str)[0] != "null") {
             var x = extract(str)[0];
             var y = extract(str)[1];
             if (y == 0) {
@@ -201,7 +201,7 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                     d = "Z_{0}(0)";
                 } else if (dom(x) == "Z_{0}(0)" || dom(x) == "ζ") {
                     d = str;
-                } else if (extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "Z_{0}(0)") {
+                } else if (/^ζ_/.test(dom(x)) && extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "Z_{0}(0)") {
                     d = "Z_{0}(Z_{0}(0))";
                 } else if (larger(str,dom(x)) && extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "ζ") {
                     d = "Z_{0}(Z_{0}(0))";
@@ -219,6 +219,32 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
             d = dom(rightPA(str));
         }
         return d;
+    }
+
+    function subg(str) {
+        var g = 0;
+        if (larger(str,"ζ")) {
+            g = str;
+        } else if (/^ζ/.test(str) && larger(rightPA(str),"ζ")) {
+            while(!(larger(str,"ζ"))){
+                if (/^ζ\+/.test(str)) {
+                    str = str.slice(2);
+                } else {
+                    str = str.slice(leftPA(str).length +1);
+                }
+            }
+            g = str;
+        } else {
+            var b = rightPA(str)
+            if (b == "ζ") {
+                g = 0;
+            } else if (extract(b)[0] != "null" && extract(b)[1] == 0) {
+                g = subg(extract(b)[0]);
+            } else if (extract(b)[0] != "null") {
+                g = subg(extract(b)[1]);
+            }
+        }
+        return g;
     }
 
     function fund(str,num) {
@@ -259,7 +285,7 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                     f = "ζ_{"+ x +"}("+ fund(y,num) +")";
                 }
             }
-        } else if (str == rightPA(str) && extract(str)[0] != "null") {
+        } else if (str == rightPA(str) && /^Z_/.test(str) && extract(str)[0] != "null") {
             var x = extract(str)[0];
             var y = extract(str)[1];
             if (y == 0) {
@@ -279,6 +305,7 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                     var x0 = extract(dom(x))[0];
                     if (larger(0,num) && larger(num,"Z_{0}(Z_{0}(0))")) {
                         var g = extract(fund(str,fund(num,0)))[0];
+                        g = subg(g);
                         f = "Z_{"+ fund(x,"Z_{"+ fund(x0,g) +"}(0)") +"}("+ y +")";
                     } else{
                         f = "Z_{"+ fund(x,"Z_{"+ fund(x0,0) +"}(0)") +"}("+ y +")";
