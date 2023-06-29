@@ -146,8 +146,8 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
             } else if (y == "ζ") {
                 ans = false;
             } else if (y == leftPA(y) && /^ζ_/.test(y) && extract(y)[0] != "null") {
-                var x0 = extract(x)[0], y0 = extract(x)[1];
-                var x1 = extract(y)[0], y1 = extract(y)[1];
+                let x0 = extract(x)[0], y0 = extract(x)[1];
+                let x1 = extract(y)[0], y1 = extract(y)[1];
                 if (x0 == x1) {
                     ans = larger(y0,y1);
                 } else{
@@ -158,8 +158,8 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
             }
         } else if (x == leftPA(x) && extract(x)[0] != "null") {
             if (y == leftPA(y) && extract(y)[0] != "null") {
-                var x0 = extract(x)[0], y0 = extract(x)[1];
-                var x1 = extract(y)[0], y1 = extract(y)[1];
+                let x0 = extract(x)[0], y0 = extract(x)[1];
+                let x1 = extract(y)[0], y1 = extract(y)[1];
                 if (x0 == x1) {
                     ans = larger(y0,y1);
                 } else{
@@ -173,8 +173,8 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                 ans = larger(leftPA(x),y);
             } else if (y != leftPA(y)) {
                 if (leftPA(x) == leftPA(y)) {
-                    var x2 = x.replace(leftPA(x) + "+", "");
-                    var y2 = y.replace(leftPA(y) + "+", "");
+                    let x2 = x.replace(leftPA(x) + "+", "");
+                    let y2 = y.replace(leftPA(y) + "+", "");
 
                     ans = larger(x2,y2);
                 } else{
@@ -188,50 +188,57 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
     };
 
     function dom(str) {
-        var d = 0;
+        var d = "ERROR";
         if (str == 0) {
             d = 0;
         } else if (str == "ζ") {
             d = "ζ";
         } else if (str == rightPA(str) && /^ζ_/.test(str) && extract(str)[0] != "null") {
-            var x = extract(str)[0];
-            var y = extract(str)[1];
+            let x = extract(str)[0];
+            let y = extract(str)[1];
+            let domx = dom(x);
+            let domy = dom(y);
+
             if (y == 0) {
                 if (x == 0) {
                     d = "ζ";
-                } else if (dom(x) == "Z_{0}(0)") {
+                } else if (domx == "Z_{0}(0)") {
                     d = str;
                 } else{
-                    d = dom(x);
+                    d = domx;
                 }
-            } else if (dom(y) == "Z_{0}(0)") {
+            } else if (domy == "Z_{0}(0)") {
                 d = "Z_{0}(Z_{0}(0))";
-            } else if (larger(str,dom(y))) {
+            } else if (larger(str,domy)) {
                 d = "Z_{0}(Z_{0}(0))";
             } else{
-                d = dom(y);
+                d = domy;
             }
+
         } else if (str == rightPA(str) && /^Z_/.test(str) && extract(str)[0] != "null") {
-            var x = extract(str)[0];
-            var y = extract(str)[1];
+            let x = extract(str)[0];
+            let y = extract(str)[1];
+            let domx = dom(x);
+            let domy = dom(y);
+
             if (y == 0) {
                 if (x == 0) {
                     d = "Z_{0}(0)";
-                } else if (dom(x) == "Z_{0}(0)" || dom(x) == "ζ") {
+                } else if (domx == "Z_{0}(0)" || domx == "ζ") {
                     d = str;
-                } else if (/^ζ_/.test(dom(x)) && extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "Z_{0}(0)") {
+                } else if (/^ζ_/.test(domx) && extract(domx)[1] == 0 && dom(extract(domx)[0]) == "Z_{0}(0)") {
                     d = "Z_{0}(Z_{0}(0))";
-                } else if (larger(str,dom(x)) && extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "ζ") {
+                } else if (larger(str,domx) && extract(domx)[1] == 0 && dom(extract(domx)[0]) == "ζ") {
                     d = "Z_{0}(Z_{0}(0))";
                 } else{
-                    d = dom(x);
+                    d = domx;
                 }
-            } else if (dom(y) == "Z_{0}(0)") {
+            } else if (domy == "Z_{0}(0)") {
                 d = "Z_{0}(Z_{0}(0))";
-            } else if (larger(str,dom(y))) {
+            } else if (larger(str,domy)) {
                 d = "Z_{0}(Z_{0}(0))";
             } else{
-                d = dom(y);
+                d = domy;
             }
         } else if (str != rightPA(str)) {
             d = dom(rightPA(str));
@@ -267,8 +274,9 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                 d = Tdomy;
             }
         } else if (str == rightPA(str) && /^Z_/.test(str) && extract(str)[0] != "null") {
-            var x = extract(str)[0];
-            var y = extract(str)[1];
+            let x = extract(str)[0];
+            let y = extract(str)[1];
+            let domx = dom(x);
             let Tdomx = Tdom(x);
             let Tdomy = Tdom(y);
 
@@ -281,7 +289,7 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                     d = "Z_{0}(Z_{0}(0))";
                 } else if (larger(str,Tdomx) && extract(Tdomx)[1] == 0 && dom(extract(Tdomx)[0]) == "ζ") {
                     d = "Z_{0}(Z_{0}(0))";
-                } else if (larger(str,dom(x)) && extract(dom(x))[1] == 0 && dom(extract(dom(x))[0]) == "Z_{0}(0)") {
+                } else if (larger(str,domx) && extract(domx)[1] == 0 && dom(extract(domx)[0]) == "Z_{0}(0)") {
                     d = str;
                 } else{
                     d = Tdomx;
@@ -332,8 +340,8 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
         } else if (str == "ζ") {
             f = num;
         } else if (str == rightPA(str) && /^ζ_/.test(str) && extract(str)[0] != "null") {
-            var x = extract(str)[0];
-            var y = extract(str)[1];
+            let x = extract(str)[0];
+            let y = extract(str)[1];
             let Tdomx = Tdom(x);
             let Tdomy = Tdom(y);
 
@@ -367,8 +375,8 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                 }
             }
         } else if (str == rightPA(str) && /^Z_/.test(str) && extract(str)[0] != "null") {
-            var x = extract(str)[0];
-            var y = extract(str)[1];
+            let x = extract(str)[0];
+            let y = extract(str)[1];
             let Tdomx = Tdom(x);
             let Tdomy = Tdom(y);
 
@@ -407,8 +415,10 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                 f = "Z_{"+ x +"}("+ fund(y,num) +")";
             } else if (y != 0 && Tdomy != "Z_{0}(0)" && Tdomy != "Z_{0}(Z_{0}(0))") {
                 if (larger(str,Tdomy)) {
-                    if (/^Z_/.test(dom(Tdomy)) && extract(dom(Tdomy))[1] == 0 && dom(extract(dom(Tdomy))[0]) == "Z_{0}(0)") {
-                        var x0 = extract(dom(Tdomy))[0];
+                    let domTdomy = dom(Tdomy);
+
+                    if (/^Z_/.test(domTdomy) && extract(domTdomy)[1] == 0 && dom(extract(domTdomy)[0]) == "Z_{0}(0)") {
+                        var x0 = extract(domTdomy)[0];
                         if (larger(0,num) && larger(num,"Z_{0}(Z_{0}(0))")) {
                             var g =  extract(fund(str,fund(num,0)))[1];
                             f = "Z_{"+ x +"}("+ fund(y,"Z_{"+ fund(x0,0) +"}("+ g +")") +")";
@@ -429,13 +439,13 @@ Z_{x}(y),ζ_{x}(y)の形式で入力してください。ζ_{0}(0)=ζとして�
                 }
             }
         } else if (str != rightPA(str)) {
-            var xm = rightPA(str);
+            let xm = rightPA(str);
             if (fund(xm,num) == 0) {
-                var l = xm.length;
+                let l = xm.length;
                 f = str.slice(0,-l-1);
             } else{
-                var l = xm.length;
-                var t = str.slice(0,-l);
+                let l = xm.length;
+                let t = str.slice(0,-l);
                 f = t + fund(xm,num);
             }
         }
